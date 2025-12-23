@@ -1,0 +1,2160 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guide Complet : Git, GitHub & Vercel - Documentation Étendue</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-glow: rgba(37, 99, 235, 0.4);
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --sidebar-width: 320px;
+            --toc-width: 280px;
+            --header-height: 72px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .dark {
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --sidebar-bg: #1e293b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            transition: var(--transition);
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Layout Structure */
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: var(--sidebar-width) 1fr var(--toc-width);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        @media (max-width: 1280px) {
+            .dashboard-container {
+                grid-template-columns: var(--sidebar-width) 1fr;
+            }
+
+            .toc-panel {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar-panel {
+                display: none;
+            }
+        }
+
+        /* Panels */
+        .sidebar-panel {
+            background: var(--bg-card);
+            border-right: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            position: relative;
+            z-index: 50;
+        }
+
+        .dark .sidebar-panel {
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .content-panel {
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        .toc-panel {
+            background: var(--bg-body);
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        /* E-learning Specifics */
+        .module-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .module-title {
+            font-size: 11px;
+            font-weight: 800;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            padding: 0 1.25rem;
+            margin-bottom: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .lesson-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            margin: 0 0.5rem;
+            border-radius: 0.75rem;
+            transition: all 0.2s;
+            cursor: pointer;
+            margin-bottom: 0.25rem;
+            color: var(--text-muted);
+        }
+
+        .lesson-item:hover {
+            background-color: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .dark .lesson-item:hover {
+            background-color: #1e293b;
+            color: #f8fafc;
+        }
+
+        .lesson-item.active {
+            background-color: #eff6ff;
+            color: #2563eb;
+        }
+
+        .dark .lesson-item.active {
+            background-color: rgba(30, 58, 138, 0.3);
+            color: #60a5fa;
+        }
+
+        .status-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 9999px;
+            font-size: 10px;
+        }
+
+        .dark .status-icon {
+            border-color: #334155;
+        }
+
+        .lesson-item.active .status-icon {
+            border-color: #3b82f6;
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .lesson-item.completed .status-icon {
+            background-color: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+
+        /* Content Aesthetics */
+        .lesson-card {
+            background-color: white;
+            border-radius: 2.5rem;
+            padding: 2rem;
+            max-width: 56rem;
+            margin: 3rem auto;
+            border: 1px solid #f1f5f9;
+        }
+
+        .dark .lesson-card {
+            background-color: #1e293b;
+            border-color: #334155;
+        }
+
+        code {
+            background-color: #f1f5f9;
+            padding: 0.125rem 0.5rem;
+            border-radius: 0.25rem;
+            color: #4f46e5;
+            font-family: monospace;
+            font-size: 0.875rem;
+        }
+
+        .dark code {
+            background-color: #0f172a;
+            color: #818cf8;
+        }
+
+        pre {
+            background-color: #020617;
+            color: #e2e8f0;
+            padding: 2rem;
+            border-radius: 1.5rem;
+            overflow-x: auto;
+            margin: 2rem 0;
+            border: 1px solid rgba(30, 41, 59, 0.5);
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            background-color: rgba(30, 41, 59, 0.8);
+            color: #cbd5e1;
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            opacity: 0;
+            transition: all 0.3s;
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        pre:hover .copy-btn {
+            opacity: 1;
+        }
+
+        .tip-box {
+            background-color: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin: 2rem 0;
+            color: #1e3a8a;
+        }
+
+        .dark .tip-box {
+            background-color: rgba(30, 58, 138, 0.1);
+            color: #bfdbfe;
+        }
+
+        /* Progress Bar */
+        .progress-header {
+            position: sticky;
+            top: 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #f1f5f9;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 40;
+        }
+
+        .dark .progress-header {
+            background-color: rgba(15, 23, 42, 0.8);
+            border-bottom-color: #1e293b;
+        }
+
+        .progress-track {
+            height: 0.5rem;
+            width: 12rem;
+            background-color: #e2e8f0;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+
+        .dark .progress-track {
+            background-color: #1e293b;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #2563eb, #4f46e5);
+            transition: all 0.5s;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 9999px;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background-color: #334155;
+        }
+
+        #theme-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 3.5rem;
+            height: 3.5rem;
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 50;
+        }
+
+        .dark #theme-toggle {
+            background-color: #1e293b;
+            border-color: #334155;
+        }
+    </style>
+    </style>
+</head>
+
+<body class="bg-slate-50">
+
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation (Curriculum) -->
+        <aside class="sidebar-panel h-screen flex flex-col">
+            <div class="p-8 border-b border-slate-100 bg-white/50 backdrop-blur-md sticky top-0 z-20">
+                <h1 class="text-2xl font-black text-blue-600 flex items-center">
+                    <i class="fas fa-play-circle mr-3"></i>
+                    3e Annee <span class="text-slate-900 ml-2">UAC</span>
+                </h1>
+                <p class="text-[10px] text-slate-400 font-bold tracking-[0.2em] mt-2">Git & Vercel Pro</p>
+
+                <div class="mt-6">
+                    <div class="flex items-center justify-between text-xs mb-2">
+                        <span class="font-bold text-slate-500">PROGRESSION</span>
+                        <span id="global-progress-txt" class="font-black text-blue-600">0%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div id="global-progress-bar" class="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto py-6">
+                <!-- Module 1 -->
+                <div class="module-group">
+                    <h3 class="module-title">MODULE 01 : FONDATIONS</h3>
+                    <div onclick="showSection('intro')" class="lesson-item active" id="nav-intro">
+                        <span class="status-icon"><i class="fas fa-check"></i></span>
+                        <span class="text-sm font-semibold">Introduction & Concept</span>
+                    </div>
+                    <div onclick="showSection('pre-requis')" class="lesson-item" id="nav-pre-requis">
+                        <span class="status-icon"><i class="fas fa-check"></i></span>
+                        <span class="text-sm font-semibold">1. Pré-requis Installation</span>
+                    </div>
+                    <div onclick="showSection('git-config')" class="lesson-item" id="nav-git-config">
+                        <span class="status-icon"><i class="fas fa-check"></i></span>
+                        <span class="text-sm font-semibold">2. Configuration Identité</span>
+                    </div>
+                    <div onclick="showSection('ssh-setup')" class="lesson-item" id="nav-ssh-setup">
+                        <span class="status-icon"><i class="fas fa-check"></i></span>
+                        <span class="text-sm font-semibold">3. Sécurisation SSH</span>
+                    </div>
+                </div>
+
+                <!-- Module 2 -->
+                <div class="module-group">
+                    <h3 class="module-title">MODULE 02 : FLUX CLOUD</h3>
+                    <div onclick="showSection('github')" class="lesson-item" id="nav-github">
+                        <span class="status-icon"><i class="fas fa-check"></i></span>
+                        <span class="text-sm font-semibold">4. Dépôt GitHub</span>
+                    </div>
+                    <div onclick="showSection('push')" class="lesson-item" id="nav-push">
+                        <span class="status-icon"><i class="fas fa-check"></i></span>
+                        <span class="text-sm font-semibold">5. Premier Push</span>
+                    </div>
+                    <div onclick="showSection('vercel')" class="lesson-item" id="nav-vercel">
+                        <span class="status-icon"><i class="fas fa-check"></i></span>
+                        <span class="text-sm font-semibold">6. Déploiement Vercel</span>
+                    </div>
+                </div>
+
+                <!-- Module 3 -->
+                <div class="module-group">
+                    <h3 class="module-title">MODULE 03 : MAÎTRISE PRO</h3>
+                    <div onclick="showSection('bonnes-pratiques')" class="lesson-item" id="nav-bonnes-pratiques">
+                        <span class="status-icon"><i class="fas fa-check"></i></span>
+                        <span class="text-sm font-semibold">7. Standards de Qualité</span>
+                    </div>
+                    <div onclick="showSection('conflits')" class="lesson-item" id="nav-conflits">
+                        <span class="status-icon"><i class="fas fa-check"></i></span>
+                        <span class="text-sm font-semibold">8. Guerre des Conflits</span>
+                    </div>
+                    <div onclick="showSection('avance')" class="lesson-item" id="nav-avance">
+                        <span class="status-icon"><i class="fas fa-check"></i></span>
+                        <span class="text-sm font-semibold">9. Commandes Ninja</span>
+                    </div>
+                    <div onclick="showSection('workflow-collab')" class="lesson-item" id="nav-workflow-collab">
+                        <span class="status-icon"><i class="fas fa-check"></i></span>
+                        <span class="text-sm font-semibold">10. Pull Requests</span>
+                    </div>
+                </div>
+
+                <!-- More... -->
+                <div class="module-group">
+                    <h3 class="module-title">MODULE 04 : MAINTENANCE</h3>
+                    <div onclick="showSection('updates')" class="lesson-item" id="nav-updates">
+                        <span class="status-icon"><i class="fas fa-check"></i></span>
+                        <span class="text-sm font-semibold">Mises à jour Web</span>
+                    </div>
+                    <div onclick="showSection('ressources')" class="lesson-item" id="nav-ressources">
+                        <span class="status-icon"><i class="fas fa-check"></i></span>
+                        <span class="text-sm font-semibold">Boîte à Outils</span>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content Panel -->
+        <main class="content-panel h-screen flex flex-col relative bg-slate-50">
+            <header class="progress-header">
+                <div>
+                    <h2 id="current-lesson-title" class="text-xl font-bold">Introduction</h2>
+                    <p class="text-xs text-slate-400 font-bold uppercase mt-1">MODULE 01 : FONDATIONS</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button id="mark-complete" class="btn-complete text-xs" onclick="markCompleted()">
+                        <i class="fas fa-check-double"></i> TERMINÉ
+                    </button>
+                    <button class="btn-next text-xs" onclick="goToNext()">
+                        SUIVANT <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="flex-1">
+
+                <!-- Introduction -->
+                <section id="intro" class="content-section active p-8 md:p-16 max-w-4xl mx-auto">
+                    <span
+                        class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider shadow">Guide
+                        Professionnel</span>
+                    <h1 class="text-5xl font-extrabold mt-6 mb-4 leading-tight">Maîtrisez le flux de travail
+                        professionnel 🚀
+                    </h1>
+                    <p class="text-xl text-gray-600 leading-relaxed mb-8">Ce guide vous accompagne pas à pas dans
+                        l'apprentissage des outils essentiels du développement web moderne : <strong
+                            class="text-blue-600">Git</strong>, <strong class="text-gray-800">GitHub</strong> et <strong
+                            class="text-black">Vercel</strong>.</p>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-12">
+                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-2xl border border-blue-200">
+                            <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mb-4">
+                                <i class="fas fa-sync-alt text-white text-xl"></i>
+                            </div>
+                            <h3 class="font-bold text-lg mb-2">Flux de travail moderne</h3>
+                            <p class="text-gray-700">Versionnez votre code, collaborez efficacement et déployez
+                                automatiquement.
+                            </p>
+                        </div>
+                        <div
+                            class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-2xl border border-green-200">
+                            <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mb-4">
+                                <i class="fas fa-shield-alt text-white text-xl"></i>
+                            </div>
+                            <h3 class="font-bold text-lg mb-2">Sécurité et sauvegarde</h3>
+                            <p class="text-gray-700">Votre code est sécurisé, versionné et accessible depuis n'importe
+                                où.</p>
+                        </div>
+                    </div>
+
+                    <div class="flow-diagram">
+                        <h3 class="font-bold text-lg mb-4 text-center">📊 Flux de travail simplifié</h3>
+                        <div class="flex flex-wrap items-center justify-center">
+                            <div class="flow-step">
+                                <div class="flow-icon">
+                                    <i class="fas fa-code text-blue-500"></i>
+                                </div>
+                                <span class="font-medium">Code local</span>
+                            </div>
+                            <i class="fas fa-arrow-right flow-arrow"></i>
+                            <div class="flow-step">
+                                <div class="flow-icon">
+                                    <i class="fab fa-git-alt text-orange-500"></i>
+                                </div>
+                                <span class="font-medium">Versionnement Git</span>
+                            </div>
+                            <i class="fas fa-arrow-right flow-arrow"></i>
+                            <div class="flow-step">
+                                <div class="flow-icon">
+                                    <i class="fab fa-github text-gray-800"></i>
+                                </div>
+                                <span class="font-medium">Dépôt GitHub</span>
+                            </div>
+                            <i class="fas fa-arrow-right flow-arrow"></i>
+                            <div class="flow-step">
+                                <div class="flow-icon">
+                                    <i class="fas fa-rocket text-black"></i>
+                                </div>
+                                <span class="font-medium">Déploiement Vercel</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-12 p-8 bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl text-white shadow-xl">
+                        <h3 class="font-bold text-xl mb-4 flex items-center">
+                            <i class="fas fa-bolt mr-3 text-yellow-400"></i>
+                            Pourquoi adopter ce workflow ?
+                        </h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-400 mr-3 mt-1"></i>
+                                <div>
+                                    <strong class="block">Automatisation totale</strong>
+                                    <p class="text-gray-300 text-sm">Modifiez votre code, poussez, et votre site est mis
+                                        à jour
+                                        automatiquement</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-history text-blue-400 mr-3 mt-1"></i>
+                                <div>
+                                    <strong class="block">Historique complet</strong>
+                                    <p class="text-gray-300 text-sm">Retournez à n'importe quelle version précédente de
+                                        votre
+                                        projet</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-users text-purple-400 mr-3 mt-1"></i>
+                                <div>
+                                    <strong class="block">Collaboration facilitée</strong>
+                                    <p class="text-gray-300 text-sm">Travaillez à plusieurs sur le même projet sans
+                                        conflits</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-wallet text-green-400 mr-3 mt-1"></i>
+                                <div>
+                                    <strong class="block">100% Gratuit pour étudiants</strong>
+                                    <p class="text-gray-300 text-sm">GitHub Education et Vercel offrent des plans
+                                        gratuits</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Pré-requis -->
+                <section id="pre-requis" class="content-section p-8 md:p-16 max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-8 flex items-center">
+                        <span class="step-number mr-4">1</span>
+                        🛠️ Pré-requis indispensables
+                    </h2>
+
+                    <div class="tip">
+                        <strong>💡 Conseil :</strong> Prenez le temps de bien configurer ces éléments avant de
+                        commencer.
+                    </div>
+
+                    <div class="space-y-6">
+                        <div
+                            class="flex items-start p-6 bg-slate-50 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                            <div
+                                class="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center shrink-0 mt-1">
+                                <i class="fab fa-github text-xl"></i>
+                            </div>
+                            <div class="ml-6 flex-1">
+                                <h4 class="font-bold text-xl mb-2">Compte GitHub</h4>
+                                <p class="text-gray-600 mb-3">GitHub est la plateforme de référence pour héberger du
+                                    code source
+                                    et collaborer sur des projets de développement.</p>
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <p class="font-medium mb-2">Création du compte :</p>
+                                    <ol class="list-decimal pl-5 text-gray-700 space-y-1">
+                                        <li>Allez sur <a href="https://github.com/join"
+                                                class="text-blue-500 underline">github.com/join</a></li>
+                                        <li>Entrez votre email, un mot de passe sécurisé et un nom d'utilisateur</li>
+                                        <li>Validez votre email</li>
+                                        <li>Optionnel : Souscrivez à <a href="https://education.github.com"
+                                                class="text-blue-500 underline">GitHub Education</a> pour des avantages
+                                            étudiants</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="flex items-start p-6 bg-slate-50 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                            <div
+                                class="w-12 h-12 bg-orange-600 text-white rounded-full flex items-center justify-center shrink-0 mt-1">
+                                <i class="fab fa-git-alt text-xl"></i>
+                            </div>
+                            <div class="ml-6 flex-1">
+                                <h4 class="font-bold text-xl mb-2">Git installé</h4>
+                                <p class="text-gray-600 mb-3">Git est un système de contrôle de version distribué qui
+                                    permet de
+                                    tracker les modifications de votre code.</p>
+
+                                <div class="grid md:grid-cols-2 gap-4 mt-4">
+                                    <div class="bg-gray-900 text-white p-4 rounded-lg">
+                                        <p class="font-mono text-green-400">git --version</p>
+                                        <p class="text-gray-400 text-sm mt-2">Exécutez cette commande dans votre
+                                            terminal pour
+                                            vérifier si Git est installé.</p>
+                                    </div>
+                                    <div class="bg-blue-50 p-4 rounded-lg">
+                                        <p class="font-medium text-blue-800">Installation selon votre OS :</p>
+                                        <ul class="text-sm text-gray-700 mt-2 space-y-1">
+                                            <li><strong>Windows :</strong> Téléchargez <a href="https://git-scm.com"
+                                                    class="text-blue-500 underline">Git for Windows</a></li>
+                                            <li><strong>macOS :</strong> <code
+                                                    class="text-pink-600">brew install git</code> ou
+                                                installez Xcode</li>
+                                            <li><strong>Linux :</strong> <code
+                                                    class="text-pink-600">sudo apt install git</code>
+                                                (Debian/Ubuntu)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="warning mt-4">
+                                    <strong>⚠️ Attention :</strong> Si la commande <code>git --version</code> n'affiche
+                                    pas de
+                                    numéro de version (ex: <code>git version 2.34.1</code>), cela signifie que Git n'est
+                                    pas
+                                    installé sur votre machine.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="flex items-start p-6 bg-slate-50 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                            <div
+                                class="w-12 h-12 bg-gray-800 text-white rounded-full flex items-center justify-center shrink-0 mt-1">
+                                <i class="fas fa-terminal text-xl"></i>
+                            </div>
+                            <div class="ml-6 flex-1">
+                                <h4 class="font-bold text-xl mb-2">Terminal / Invite de commandes</h4>
+                                <p class="text-gray-600 mb-3">Vous aurez besoin d'un terminal pour exécuter les
+                                    commandes Git.
+                                </p>
+
+                                <div class="bg-gray-100 p-4 rounded-lg">
+                                    <p class="font-medium mb-2">Accès au terminal selon votre OS :</p>
+                                    <ul class="list-disc pl-5 text-gray-700 space-y-1">
+                                        <li><strong>Windows :</strong> CMD, PowerShell, ou Git Bash (recommandé)</li>
+                                        <li><strong>macOS :</strong> Terminal.app (Applications > Utilitaires)</li>
+                                        <li><strong>Linux :</strong> Terminal (Ctrl+Alt+T sur Ubuntu)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="mt-8 p-6 bg-gradient-to-r from-green-50 to-emerald-100 rounded-xl border border-green-200">
+                        <h4 class="font-bold text-lg mb-3 flex items-center">
+                            <i class="fas fa-check-circle text-green-600 mr-2"></i>
+                            Vérification rapide
+                        </h4>
+                        <p class="text-gray-700">Avant de passer à l'étape suivante, assurez-vous d'avoir :</p>
+                        <ul class="mt-2 space-y-2">
+                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Un compte
+                                GitHub
+                                actif</li>
+                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Git installé
+                                et
+                                fonctionnel</li>
+                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Un
+                                terminal/préparé à
+                                l'utilisation</li>
+                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Un projet web
+                                (HTML,
+                                CSS, JS) à déployer</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Configuration Git -->
+                <section id="git-config" class="content-section p-8 md:p-16 max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-8 flex items-center">
+                        <span class="step-number mr-4">2</span>
+                        ⚙️ Configuration de Git
+                    </h2>
+
+                    <p class="mb-6">Git a besoin de connaître votre identité pour associer vos modifications à votre nom
+                        et
+                        email. Cette configuration est <strong>globale</strong>, c'est-à-dire qu'elle s'appliquera à
+                        tous vos
+                        projets Git.</p>
+
+                    <div class="important">
+                        <strong>❗ Important :</strong> L'email utilisé doit être le même que celui de votre compte
+                        GitHub pour
+                        que vos contributions soient correctement liées à votre profil.
+                    </div>
+
+                    <div class="bg-gray-900 p-6 rounded-xl shadow-lg mb-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
+                            <div class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div>
+                            <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                            <span class="text-gray-400 ml-2 text-sm">Terminal</span>
+                        </div>
+
+                        <pre><code class="command">git config --global user.name "Votre Prénom Nom"</code>
+<span class="comment"># Définit votre nom (visible dans l'historique Git)</span>
+
+<code class="command">git config --global user.email "votre-email@exemple.com"</code>
+<span class="comment"># Définit votre email (doit correspondre à GitHub)</span></pre>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                            <h4 class="font-bold text-lg mb-3">Exemples concrets</h4>
+                            <div class="space-y-3">
+                                <div class="bg-gray-50 p-3 rounded">
+                                    <p class="text-sm text-gray-500">Pour un étudiant :</p>
+                                    <p class="font-mono">git config --global user.name "Jean Dupont"</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded">
+                                    <p class="text-sm text-gray-500">Avec un pseudonyme :</p>
+                                    <p class="font-mono">git config --global user.name "devJean42"</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                            <h4 class="font-bold text-lg mb-3">Vérification de la configuration</h4>
+                            <p class="text-gray-600 mb-3">Pour vérifier que votre configuration est correcte :</p>
+                            <div class="bg-gray-900 text-white p-3 rounded font-mono text-sm">
+                                <span class="text-green-400">git config --global --list</span>
+                            </div>
+                            <p class="text-gray-500 text-sm mt-2">Cette commande affichera toutes vos configurations Git
+                                globales.</p>
+                        </div>
+                    </div>
+
+                    <div class="tip">
+                        <strong>💡 Configuration optionnelle mais recommandée :</strong>
+                        <div class="mt-2">
+                            <p class="font-mono text-sm bg-gray-100 p-2 rounded">git config --global init.defaultBranch
+                                main</p>
+                            <p class="text-gray-600 text-sm mt-1">Définit "main" comme nom de branche par défaut au lieu
+                                de
+                                "master".</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-6 rounded-xl mt-8">
+                        <h4 class="font-bold text-lg mb-3">📚 Comprendre la configuration Git</h4>
+                        <p class="text-gray-700">Git utilise trois niveaux de configuration :</p>
+                        <ol class="list-decimal pl-5 mt-2 space-y-2">
+                            <li><strong>Système</strong> (--system) : Pour tous les utilisateurs de la machine</li>
+                            <li><strong>Global</strong> (--global) : Pour l'utilisateur actuel (c'est ce que nous
+                                utilisons)
+                            </li>
+                            <li><strong>Local</strong> (--local) : Pour un dépôt spécifique (surcharge les
+                                configurations
+                                globales)</li>
+                        </ol>
+                        <p class="mt-3 text-sm text-gray-600">Les configurations sont stockées dans des fichiers :<br>
+                            <strong>Global :</strong> ~/.gitconfig (macOS/Linux) ou C:\Users\VotreNom\.gitconfig
+                            (Windows)<br>
+                            <strong>Local :</strong> .git/config dans chaque projet
+                        </p>
+                    </div>
+                </section>
+
+                <!-- SSH Setup -->
+                <section id="ssh-setup" class="content-section p-8 md:p-16 max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-8 flex items-center">
+                        <span class="step-number mr-4">3</span>
+                        🔑 Configuration SSH (Optionnelle mais recommandée)
+                    </h2>
+
+                    <p class="mb-6">L'authentification SSH est plus sécurisée et vous évite de taper votre mot de passe
+                        ou token
+                        à
+                        chaque fois que vous "pushez" du code. C'est la méthode préférée des professionnels.</p>
+
+                    <div class="card mb-8">
+                        <h3 class="text-xl font-bold mb-4">Étape 1 : Générer une clé SSH</h3>
+                        <p class="text-gray-600 mb-4">Ouvrez votre terminal et tapez la commande suivante (remplacez par
+                            votre
+                            email
+                            GitHub) :</p>
+                        <div class="bg-slate-900 p-4 rounded-xl mb-4">
+                            <pre><code class="command">ssh-keygen -t ed25519 -C "votre-email@exemple.com"</code></pre>
+                        </div>
+                        <p class="text-sm text-gray-500 italic">Appuyez sur Entrée pour toutes les questions par défaut.
+                        </p>
+                    </div>
+
+                    <div class="card mb-8">
+                        <h3 class="text-xl font-bold mb-4">Étape 2 : Copier la clé publique</h3>
+                        <p class="text-gray-600 mb-4">Affichez votre clé publique pour la copier :</p>
+                        <div class="bg-slate-900 p-4 rounded-xl mb-4">
+                            <pre><code class="command">cat ~/.ssh/id_ed25519.pub</code></pre>
+                        </div>
+                        <p class="text-sm text-gray-500">Copiez tout le texte qui s'affiche (commence par
+                            ssh-ed25519...).</p>
+                    </div>
+
+                    <div class="card mb-8">
+                        <h3 class="text-xl font-bold mb-4">Étape 3 : Ajouter à GitHub</h3>
+                        <ol class="list-decimal pl-6 space-y-3 text-gray-700">
+                            <li>Allez dans vos <strong>Settings</strong> sur GitHub.</li>
+                            <li>Cliquez sur <strong>SSH and GPG keys</strong>.</li>
+                            <li>Cliquez sur <strong>New SSH Key</strong>.</li>
+                            <li>Donnez un titre (ex: "Mon PC Portable") et collez votre clé.</li>
+                        </ol>
+                    </div>
+
+                    <div class="tip">
+                        <strong>💡 Testez la connexion :</strong> Tapez <code>ssh -T git@github.com</code> dans votre
+                        terminal.
+                        Si
+                        vous voyez "Hi [username]!", c'est gagné !
+                    </div>
+                </section>
+
+                <!-- Créer le dépôt GitHub -->
+                <section id="github" class="content-section p-8 md:p-16 max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-8 flex items-center">
+                        <span class="step-number mr-4">4</span>
+                        📁 Création du dépôt GitHub
+                    </h2>
+
+                    <p class="mb-6">Un dépôt GitHub (ou "repo") est comme un dossier en ligne où vous stockez votre
+                        code. C'est
+                        l'endroit où vous enverrez votre code depuis votre ordinateur.</p>
+
+                    <div class="warning">
+                        <strong>⚠️ Note importante :</strong> Pour ce premier projet, nous créons un dépôt
+                        <strong>vide</strong>
+                        (sans README, .gitignore ou licence). Nous ajouterons ces fichiers plus tard manuellement.
+                    </div>
+
+                    <div class="bg-white p-8 rounded-2xl border border-gray-300 shadow-lg mb-8">
+                        <h3 class="text-2xl font-bold mb-6 text-center">Guide visuel étape par étape</h3>
+
+                        <div class="space-y-8">
+                            <div class="flex items-start">
+                                <div class="step-number mr-4 mt-1">1</div>
+                                <div>
+                                    <h4 class="font-bold text-lg mb-2">Se connecter à GitHub</h4>
+                                    <p class="text-gray-600">Allez sur <a href="https://github.com"
+                                            class="text-blue-500 underline">github.com</a> et connectez-vous avec votre
+                                        compte.
+                                    </p>
+                                    <div class="bg-gray-100 p-3 rounded-lg mt-2">
+                                        <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                                            alt="GitHub logo" class="w-8 h-8 inline-block mr-2">
+                                        <span class="text-gray-700">Assurez-vous d'être bien connecté en vérifiant votre
+                                            avatar
+                                            en haut à droite.</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="step-number mr-4 mt-1">2</div>
+                                <div>
+                                    <h4 class="font-bold text-lg mb-2">Accéder à la création de dépôt</h4>
+                                    <p class="text-gray-600">Cliquez sur le bouton "+" en haut à droite, puis
+                                        sélectionnez "New
+                                        repository".</p>
+                                    <div class="bg-yellow-50 p-3 rounded-lg mt-2 border border-yellow-200">
+                                        <p class="text-yellow-800 text-sm"><strong>Alternative :</strong> Vous pouvez
+                                            aussi
+                                            cliquer sur l'onglet "Repositories" depuis votre profil, puis sur le bouton
+                                            vert
+                                            "New".</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="step-number mr-4 mt-1">3</div>
+                                <div>
+                                    <h4 class="font-bold text-lg mb-2">Remplir les informations du dépôt</h4>
+                                    <div class="bg-gray-100 p-4 rounded-lg">
+                                        <div class="mb-3">
+                                            <span class="font-medium block mb-1">Repository name *</span>
+                                            <div class="bg-white p-2 rounded border">
+                                                <code>mon-premier-site</code> ou <code>tp-final-web</code>
+                                            </div>
+                                            <p class="text-gray-500 text-sm mt-1">Utilisez des minuscules et des tirets,
+                                                pas
+                                                d'espaces.</p>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <span class="font-medium block mb-1">Description (optionnel)</span>
+                                            <div class="bg-white p-2 rounded border">
+                                                <code>Mon premier site web déployé avec Git et Vercel</code>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <span class="font-medium block mb-1">Visibility</span>
+                                            <div class="flex items-center">
+                                                <input type="radio" id="public" name="visibility" checked class="mr-2">
+                                                <label for="public" class="mr-4"><strong>Public</strong> - Tous peuvent
+                                                    voir
+                                                    (recommandé)</label>
+                                                <input type="radio" id="private" name="visibility" class="mr-2">
+                                                <label for="private"><strong>Private</strong> - Seulement vous et les
+                                                    collaborateurs</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="step-number mr-4 mt-1">4</div>
+                                <div>
+                                    <h4 class="font-bold text-lg mb-2">Options d'initialisation</h4>
+                                    <div class="important">
+                                        <strong>CRUCIAL :</strong> Ne cochez AUCUNE de ces options pour ce premier
+                                        projet :
+                                        <div class="mt-2 space-y-1">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-times text-red-500 mr-2"></i>
+                                                <span>☐ <strong>Add a README file</strong> (nous le créerons
+                                                    manuellement)</span>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <i class="fas fa-times text-red-500 mr-2"></i>
+                                                <span>☐ <strong>Add .gitignore</strong> (à ajouter plus tard selon le
+                                                    projet)</span>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <i class="fas fa-times text-red-500 mr-2"></i>
+                                                <span>☐ <strong>Choose a license</strong> (optionnel pour plus
+                                                    tard)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="step-number mr-4 mt-1">5</div>
+                                <div>
+                                    <h4 class="font-bold text-lg mb-2">Créer le dépôt</h4>
+                                    <p class="text-gray-600">Cliquez sur le bouton vert <strong>"Create
+                                            repository"</strong> en
+                                        bas de la page.</p>
+                                    <div class="bg-green-50 p-3 rounded-lg mt-2 border border-green-200">
+                                        <p class="text-green-800"><strong>Félicitations !</strong> Votre dépôt GitHub
+                                            est
+                                            maintenant créé.</p>
+                                        <p class="text-sm mt-1">Vous allez être redirigé vers une page avec des
+                                            instructions. Ne
+                                            les suivez pas encore, nous allons le faire étape par étape.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6 mt-8">
+                        <div class="bg-blue-50 p-6 rounded-xl">
+                            <h4 class="font-bold text-lg mb-3">📝 Bonnes pratiques de nommage</h4>
+                            <ul class="space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                                    <span>Utilisez des <strong>minuscules</strong></span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                                    <span>Séparer les mots avec des <strong>tirets</strong> (mon-premier-site)</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                                    <span>Soignez la description : elle apparaît dans les recherches</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                                    <span>Choisissez un nom court mais descriptif</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-purple-50 p-6 rounded-xl">
+                            <h4 class="font-bold text-lg mb-3">🔗 URL de votre dépôt</h4>
+                            <p class="text-gray-700">Une fois créé, votre dépôt aura une URL unique :</p>
+                            <div class="bg-white p-3 rounded-lg border border-purple-200 mt-2">
+                                <code
+                                    class="text-purple-600 break-all">https://github.com/votre-nom-utilisateur/nom-du-depot</code>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">Gardez cette URL sous la main, vous en aurez besoin à
+                                l'étape
+                                suivante.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Pousser le code -->
+                <section id="push" class="content-section p-8 md:p-16 max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-8 flex items-center">
+                        <span class="step-number mr-4">5</span>
+                        📤 Envoyer votre code sur GitHub
+                    </h2>
+
+                    <p class="mb-6">Maintenant que votre dépôt GitHub est créé, il est temps d'envoyer votre code depuis
+                        votre
+                        ordinateur vers GitHub. Cette opération s'appelle un <strong>push</strong> (pousser).</p>
+
+                    <div
+                        class="bg-gradient-to-r from-orange-50 to-amber-50 p-6 rounded-xl border border-orange-200 mb-8">
+                        <h4 class="font-bold text-lg mb-3 flex items-center">
+                            <i class="fas fa-folder-open text-orange-500 mr-2"></i>
+                            Structure de projet recommandée
+                        </h4>
+                        <p class="text-gray-700 mb-3">Assurez-vous que votre projet a une structure de base :</p>
+                        <div class="bg-white p-4 rounded-lg border">
+                            <pre class="text-sm">
+mon-projet/
+├── index.html          # Fichier principal HTML
+├── style.css           # Feuille de style CSS
+├── script.js           # JavaScript (optionnel)
+├── images/             # Dossier pour les images
+│   └── logo.png
+└── README.md           # Documentation (à créer)</pre>
+                        </div>
+                    </div>
+
+                    <h3 class="text-2xl font-bold mb-6">Les 5 commandes magiques</h3>
+
+                    <div class="space-y-6 mb-8">
+                        <div class="bg-white p-6 rounded-xl border border-gray-300 shadow-sm">
+                            <div class="flex items-center mb-4">
+                                <div class="step-number bg-blue-500">1</div>
+                                <h4 class="font-bold text-xl ml-4">Initialiser Git dans votre projet</h4>
+                            </div>
+                            <p class="text-gray-600 mb-4">Cette commande transforme votre dossier en un "dépôt Git"
+                                local,
+                                permettant de tracker les modifications.</p>
+                            <div class="bg-gray-900 p-4 rounded-lg">
+                                <pre><code class="command">git init</code></pre>
+                            </div>
+                            <p class="text-green-600 font-medium mt-2 flex items-center">
+                                <i class="fas fa-check-circle mr-2"></i>
+                                Résultat attendu : <code
+                                    class="text-gray-700">Initialized empty Git repository in /chemin/vers/votre/projet/.git/</code>
+                            </p>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl border border-gray-300 shadow-sm">
+                            <div class="flex items-center mb-4">
+                                <div class="step-number bg-green-600">2</div>
+                                <h4 class="font-bold text-xl ml-4">Ajouter les fichiers à l'index (staging)</h4>
+                            </div>
+                            <p class="text-gray-600 mb-4">Cette commande prépare les fichiers pour être enregistrés. Le
+                                point
+                                (<code>.</code>) signifie "tous les fichiers modifiés".</p>
+                            <div class="bg-gray-900 p-4 rounded-lg">
+                                <pre><code class="command">git add .</code></pre>
+                            </div>
+                            <div class="grid md:grid-cols-2 gap-4 mt-4">
+                                <div class="bg-blue-50 p-3 rounded">
+                                    <p class="font-medium text-blue-800">Variantes utiles :</p>
+                                    <p class="font-mono text-sm">git add nom-du-fichier</p>
+                                    <p class="text-gray-600 text-xs">Ajoute un fichier spécifique</p>
+                                </div>
+                                <div class="bg-blue-50 p-3 rounded">
+                                    <p class="font-medium text-blue-800">Pour vérifier :</p>
+                                    <p class="font-mono text-sm">git status</p>
+                                    <p class="text-gray-600 text-xs">Voir quels fichiers sont prêts</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl border border-gray-300 shadow-sm">
+                            <div class="flex items-center mb-4">
+                                <div class="step-number bg-purple-600">3</div>
+                                <h4 class="font-bold text-xl ml-4">Créer un commit (sauvegarde)</h4>
+                            </div>
+                            <p class="text-gray-600 mb-4">Un commit est une sauvegarde de l'état actuel de votre projet.
+                                Le
+                                message doit décrire les changements apportés.</p>
+                            <div class="bg-gray-900 p-4 rounded-lg">
+                                <pre><code class="command">git commit -m "Initialisation du projet"</code></pre>
+                            </div>
+                            <div class="tip mt-4">
+                                <strong>💡 Messages de commit efficaces :</strong>
+                                <ul class="mt-2 space-y-1">
+                                    <li><code>"Ajout de la page d'accueil avec menu"</code></li>
+                                    <li><code>"Correction du bug sur mobile"</code></li>
+                                    <li><code>"Ajout des fonctionnalités de contact"</code></li>
+                                    <li><strong>Évitez :</strong> <code>"commit"</code>, <code>"update"</code>,
+                                        <code>"fix"</code> (trop vagues)
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl border border-gray-300 shadow-sm">
+                            <div class="flex items-center mb-4">
+                                <div class="step-number bg-red-600">4</div>
+                                <h4 class="font-bold text-xl ml-4">Connecter à GitHub (remote)</h4>
+                            </div>
+                            <p class="text-gray-600 mb-4">Cette commande relie votre dépôt local au dépôt distant sur
+                                GitHub.
+                            </p>
+                            <div class="bg-gray-900 p-4 rounded-lg">
+                                <pre><code class="command">git remote add origin https://github.com/votre-utilisateur/votre-depot.git</code></pre>
+                            </div>
+                            <div class="important mt-4">
+                                <strong>❗ Où trouver l'URL ?</strong>
+                                <p class="mt-1">1. Allez sur votre dépôt GitHub<br>
+                                    2. Cliquez sur le bouton vert <strong>"Code"</strong><br>
+                                    3. Copiez l'URL HTTPS (elle se termine par .git)</p>
+                            </div>
+                            <div class="bg-yellow-50 p-3 rounded-lg mt-4">
+                                <p class="text-yellow-800 text-sm"><strong>Vérification :</strong> Pour voir si la
+                                    connexion est
+                                    établie :</p>
+                                <p class="font-mono text-sm bg-white p-2 rounded border">git remote -v</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl border border-gray-300 shadow-sm">
+                            <div class="flex items-center mb-4">
+                                <div class="step-number bg-indigo-600">5</div>
+                                <h4 class="font-bold text-xl ml-4">Pousser le code vers GitHub</h4>
+                            </div>
+                            <p class="text-gray-600 mb-4">Cette commande envoie effectivement votre code vers GitHub.
+                                L'option
+                                <code>-u</code> mémorise cette branche comme référence.
+                            </p>
+                            <div class="bg-gray-900 p-4 rounded-lg">
+                                <pre><code class="command">git push -u origin main</code></pre>
+                            </div>
+                            <div class="grid md:grid-cols-2 gap-4 mt-4">
+                                <div class="bg-gray-100 p-3 rounded">
+                                    <p class="font-medium">Si la commande échoue :</p>
+                                    <p class="text-sm text-gray-600">Essayez <code>git push -u origin master</code> si
+                                        votre
+                                        branche s'appelle "master"</p>
+                                </div>
+                                <div class="bg-gray-100 p-3 rounded">
+                                    <p class="font-medium">Pour les prochains pushes :</p>
+                                    <p class="text-sm text-gray-600">Il suffira de taper <code>git push</code> (sans les
+                                        options)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-gradient-to-r from-green-50 to-emerald-100 p-6 rounded-2xl border border-green-200 mt-12">
+                        <h3 class="font-bold text-xl mb-4 flex items-center">
+                            <i class="fas fa-check-circle text-green-600 mr-2"></i>
+                            Vérification finale
+                        </h3>
+                        <p class="text-gray-700 mb-4">Après avoir exécuté ces 5 commandes, vérifiez que tout a
+                            fonctionné :</p>
+                        <ol class="list-decimal pl-5 space-y-2">
+                            <li>Allez sur votre dépôt GitHub</li>
+                            <li>Actualisez la page</li>
+                            <li>Vous devriez voir vos fichiers apparaître</li>
+                            <li>Cliquez sur "commits" (en haut) pour voir votre historique</li>
+                        </ol>
+                        <p class="mt-4 font-medium text-green-700">🎉 Félicitations ! Votre code est maintenant sur
+                            GitHub.</p>
+                    </div>
+                </section>
+
+                <!-- Déployer sur Vercel -->
+                <section id="vercel" class="content-section p-8 md:p-16 max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-8 flex items-center">
+                        <span class="step-number mr-4">6</span>
+                        💎 Déploiement avec Vercel
+                    </h2>
+
+                    <p class="mb-6">Vercel est une plateforme de déploiement qui vous permet de mettre votre site en
+                        ligne en
+                        quelques clics, avec un domaine gratuit et des mises à jour automatiques à chaque modification.
+                    </p>
+
+                    <div class="grid md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-black text-white p-6 rounded-xl">
+                            <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mb-4">
+                                <span class="text-black font-bold text-xl">V</span>
+                            </div>
+                            <h4 class="font-bold text-lg mb-2">Pourquoi Vercel ?</h4>
+                            <ul class="text-sm space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-check mr-2 mt-1"></i>
+                                    <span>100% gratuit pour projets personnels</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check mr-2 mt-1"></i>
+                                    <span>Déploiement automatique</span>
+                                </li>
+                                <li class="fas fa-check mr-2 mt-1">
+                                    <span>Domaines personnalisés gratuits</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl border border-gray-300 shadow-sm">
+                            <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mb-4">
+                                <i class="fas fa-bolt text-white text-xl"></i>
+                            </div>
+                            <h4 class="font-bold text-lg mb-2">Rapide et simple</h4>
+                            <p class="text-gray-600">Connectez-vous avec GitHub, sélectionnez votre dépôt, et déployez
+                                en un
+                                clic.</p>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl border border-gray-300 shadow-sm">
+                            <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mb-4">
+                                <i class="fas fa-sync-alt text-white text-xl"></i>
+                            </div>
+                            <h4 class="font-bold text-lg mb-2">Mises à jour automatiques</h4>
+                            <p class="text-gray-600">Chaque fois que vous poussez du code sur GitHub, Vercel met à jour
+                                votre
+                                site automatiquement.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-2xl font-bold mb-6">Guide étape par étape</h3>
+
+                    <div class="space-y-8">
+                        <div class="flex items-start bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                            <div class="step-number mr-4 mt-1 bg-blue-500">1</div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-xl mb-3">Se connecter à Vercel</h4>
+                                <p class="text-gray-600 mb-4">Allez sur <a href="https://vercel.com"
+                                        class="text-blue-500 underline font-medium">vercel.com</a> et cliquez sur "Sign
+                                    Up".</p>
+
+                                <div class="bg-gray-100 p-4 rounded-lg">
+                                    <p class="font-medium mb-2">Option de connexion recommandée :</p>
+                                    <div class="flex items-center p-3 bg-white rounded border">
+                                        <i class="fab fa-github text-2xl mr-3 text-gray-800"></i>
+                                        <div>
+                                            <p class="font-medium">Continuer avec GitHub</p>
+                                            <p class="text-gray-500 text-sm">La méthode la plus simple pour intégrer vos
+                                                projets
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <p class="mt-4 text-gray-600">Autorisez Vercel à accéder à vos dépôts GitHub (vous
+                                    pouvez
+                                    limiter l'accès à certains dépôts).</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                            <div class="step-number mr-4 mt-1 bg-green-500">2</div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-xl mb-3">Importer votre projet</h4>
+                                <p class="text-gray-600 mb-4">Une fois connecté, vous arrivez sur le tableau de bord
+                                    Vercel.</p>
+
+                                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-5 rounded-xl mb-4">
+                                    <p class="font-medium text-blue-800 mb-3">Cliquez sur :</p>
+                                    <div class="flex items-center justify-center">
+                                        <div class="text-center">
+                                            <div
+                                                class="w-16 h-16 bg-black text-white rounded-full flex items-center justify-center mx-auto mb-2">
+                                                <i class="fas fa-plus text-2xl"></i>
+                                            </div>
+                                            <p class="font-bold">Add New...</p>
+                                        </div>
+                                        <i class="fas fa-arrow-right mx-6 text-gray-400 text-xl"></i>
+                                        <div class="text-center">
+                                            <div
+                                                class="w-16 h-16 bg-white border-2 border-gray-300 rounded-full flex items-center justify-center mx-auto mb-2">
+                                                <i class="fab fa-github text-2xl"></i>
+                                            </div>
+                                            <p class="font-bold">Project</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <p class="text-gray-600">Vous verrez apparaître la liste de vos dépôts GitHub. Cherchez
+                                    le dépôt
+                                    que vous venez de créer et cliquez sur <strong>"Import"</strong>.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                            <div class="step-number mr-4 mt-1 bg-purple-500">3</div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-xl mb-3">Configuration du projet</h4>
+                                <p class="text-gray-600 mb-4">Vercel détecte automatiquement le type de projet
+                                    (HTML/CSS, React,
+                                    etc.).</p>
+
+                                <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                                    <p class="font-medium mb-3">Paramètres importants :</p>
+                                    <div class="space-y-3">
+                                        <div>
+                                            <p class="font-medium text-sm">Project Name</p>
+                                            <div class="bg-white p-2 rounded border">
+                                                <code>mon-premier-site</code>
+                                            </div>
+                                            <p class="text-gray-500 text-xs mt-1">Cela déterminera l'URL de votre site
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <p class="font-medium text-sm">Framework Preset</p>
+                                            <div class="bg-white p-2 rounded border">
+                                                <code>Other (Static HTML)</code>
+                                            </div>
+                                            <p class="text-gray-500 text-xs mt-1">Pour un site HTML/CSS/JS basique</p>
+                                        </div>
+
+                                        <div>
+                                            <p class="font-medium text-sm">Root Directory</p>
+                                            <div class="bg-white p-2 rounded border">
+                                                <code>./</code>
+                                            </div>
+                                            <p class="text-gray-500 text-xs mt-1">Signifie "dossier racine du dépôt"</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="tip">
+                                    <strong>💡 Conseil :</strong> Pour un premier projet, ne modifiez aucun autre
+                                    paramètre.
+                                    Laissez tout par défaut.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                            <div class="step-number mr-4 mt-1 bg-red-500">4</div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-xl mb-3">Déployer !</h4>
+                                <p class="text-gray-600 mb-4">Cliquez sur le bouton bleu <strong>"Deploy"</strong> en
+                                    bas de la
+                                    page.</p>
+
+                                <div
+                                    class="bg-gradient-to-r from-green-50 to-emerald-100 p-6 rounded-xl text-center mb-4">
+                                    <i class="fas fa-rocket text-4xl text-green-500 mb-4"></i>
+                                    <p class="font-bold text-xl text-green-700">Le déploiement commence !</p>
+                                    <p class="text-gray-700 mt-2">Vercel va maintenant :</p>
+                                    <ol class="list-decimal inline-block text-left mt-2 pl-5 space-y-1">
+                                        <li>Télécharger votre code depuis GitHub</li>
+                                        <li>Préparer le site pour la production</li>
+                                        <li>Générer une URL unique</li>
+                                        <li>Mettre votre site en ligne</li>
+                                    </ol>
+                                </div>
+
+                                <p class="text-gray-600">Le processus prend généralement 30 secondes à 2 minutes. Vous
+                                    pouvez
+                                    suivre la progression en direct.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-black to-gray-900 text-white p-8 rounded-2xl mt-12">
+                        <h3 class="font-bold text-2xl mb-6 text-center">🎉 Votre site est en ligne !</h3>
+
+                        <div class="text-center mb-6">
+                            <div class="inline-block bg-gray-800 p-4 rounded-lg">
+                                <p class="text-gray-400 text-sm">Votre URL Vercel :</p>
+                                <p class="text-xl font-mono text-green-400">https://mon-premier-site.vercel.app</p>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="text-center p-4 bg-gray-800 rounded-lg">
+                                <i class="fas fa-link text-blue-400 text-2xl mb-2"></i>
+                                <p class="font-medium">Partageable</p>
+                                <p class="text-gray-400 text-sm">Envoyez le lien à qui vous voulez</p>
+                            </div>
+
+                            <div class="text-center p-4 bg-gray-800 rounded-lg">
+                                <i class="fas fa-mobile-alt text-green-400 text-2xl mb-2"></i>
+                                <p class="font-medium">Responsive</p>
+                                <p class="text-gray-400 text-sm">Optimisé pour mobile et desktop</p>
+                            </div>
+
+                            <div class="text-center p-4 bg-gray-800 rounded-lg">
+                                <i class="fas fa-lock text-yellow-400 text-2xl mb-2"></i>
+                                <p class="font-medium">HTTPS sécurisé</p>
+                                <p class="text-gray-400 text-sm">Connexion chiffrée automatique</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 p-4 bg-gray-800 rounded-lg">
+                            <h4 class="font-bold mb-3 flex items-center">
+                                <i class="fas fa-star text-yellow-400 mr-2"></i>
+                                Prochaines étapes
+                            </h4>
+                            <ul class="space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-400 mr-2 mt-1"></i>
+                                    <span><strong>Testez votre site</strong> - Ouvrez l'URL dans votre navigateur</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-400 mr-2 mt-1"></i>
+                                    <span><strong>Modifiez votre code</strong> - Puis faites <code
+                                            class="bg-gray-700 px-2 py-1 rounded">git add .</code>, <code
+                                            class="bg-gray-700 px-2 py-1 rounded">git commit -m "..."</code>, <code
+                                            class="bg-gray-700 px-2 py-1 rounded">git push</code></span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-400 mr-2 mt-1"></i>
+                                    <span><strong>Vérifiez Vercel</strong> - Votre site se mettra à jour automatiquement
+                                        en 1-2
+                                        minutes</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-6 rounded-xl border border-blue-200 mt-8">
+                        <h4 class="font-bold text-lg mb-3 flex items-center">
+                            <i class="fas fa-cog text-blue-500 mr-2"></i>
+                            Personnalisation avancée (optionnel)
+                        </h4>
+                        <p class="text-gray-700 mb-3">Une fois votre site déployé, vous pouvez :</p>
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li>Changer le nom de domaine dans les paramètres du projet Vercel</li>
+                            <li>Ajouter un domaine personnalisé (votrenom.com) dans l'onglet "Domains"</li>
+                            <li>Configurer des variables d'environnement pour les projets avancés</li>
+                            <li>Activer les Analytics pour voir le trafic sur votre site</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Bonnes pratiques -->
+                <section id="bonnes-pratiques" class="content-section p-8 md:p-16 max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-8 flex items-center">
+                        <i class="fas fa-star text-yellow-500 mr-4"></i>
+                        📋 Bonnes pratiques Git & GitHub
+                    </h2>
+
+                    <p class="mb-6">Adopter de bonnes pratiques dès le début vous fera gagner du temps et évitera des
+                        problèmes
+                        courants.</p>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-white p-6 rounded-xl border border-green-300 shadow-sm">
+                            <h4 class="font-bold text-lg mb-3 text-green-700">✅ À FAIRE</h4>
+                            <ul class="space-y-3">
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
+                                    <span>Commiter souvent, avec des messages descriptifs</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
+                                    <span>Utiliser <code>.gitignore</code> pour exclure les fichiers sensibles</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
+                                    <span>Pousser (push) régulièrement vers GitHub</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
+                                    <span>Créer un README.md pour documenter votre projet</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl border border-red-300 shadow-sm">
+                            <h4 class="font-bold text-lg mb-3 text-red-700">❌ À ÉVITER</h4>
+                            <ul class="space-y-3">
+                                <li class="flex items-start">
+                                    <i class="fas fa-times-circle text-red-500 mr-2 mt-1"></i>
+                                    <span>Commiter des fichiers sensibles (mots de passe, clés API)</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-times-circle text-red-500 mr-2 mt-1"></i>
+                                    <span>Messages de commit vagues comme "update" ou "fix"</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-times-circle text-red-500 mr-2 mt-1"></i>
+                                    <span>Laisser des fichiers inutiles (node_modules, .DS_Store)</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-times-circle text-red-500 mr-2 mt-1"></i>
+                                    <span>Travailler directement sur la branche main sans tester</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="mb-8">
+                        <h3 class="text-2xl font-bold mb-6">📝 Fichier .gitignore essentiel</h3>
+                        <p class="mb-4">Le fichier <code>.gitignore</code> indique à Git quels fichiers ne pas
+                            versionner. Créez
+                            ce fichier à la racine de votre projet :</p>
+
+                        <div class="bg-gray-900 p-6 rounded-xl">
+                            <pre class="text-sm">
+<span class="comment"># Fichiers système</span>
+.DS_Store
+Thumbs.db
+
+<span class="comment"># Dossiers de dépendances</span>
+node_modules/
+vendor/
+
+<span class="comment"># Fichiers de configuration locaux</span>
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+<span class="comment"># Fichiers de build</span>
+dist/
+build/
+*.log
+
+<span class="comment"># Éditeurs de code</span>
+.vscode/
+.idea/
+*.swp
+*.swo
+
+<span class="comment"># Système d'exploitation</span>
+*.DS_Store
+Thumbs.db</pre>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-bold mb-6">📄 README.md professionnel</h3>
+                        <p class="mb-4">Un bon README explique ce que fait votre projet, comment l'installer et
+                            l'utiliser.
+                            Exemple minimal :</p>
+
+                        <div class="bg-gray-100 p-6 rounded-xl border">
+                            <pre class="text-sm">
+# Nom du Projet
+
+Une brève description de votre projet (1-2 phrases).
+
+## 🚀 Fonctionnalités
+
+- Liste des principales fonctionnalités
+- Avantages par rapport à d'autres solutions
+- Points forts techniques
+
+## 📦 Installation
+
+1. Clonez le dépôt :
+   ```bash
+   git clone https://github.com/votre-utilisateur/nom-du-projet.git<div class="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-200 mt-8">
+            <h4 class="font-bold text-lg mb-3">🏷️ Étiquettes et milestones sur GitHub</h4>
+            <p class="text-gray-700 mb-3">Pour organiser votre travail sur GitHub :</p>
+            <div class="flex flex-wrap gap-2">
+                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">enhancement</span>
+                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">bug</span>
+                <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">documentation</span>
+                <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm">urgent</span>
+                <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">feature</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gérer les conflits -->
+    <section id="conflits" class="content-section p-8 md:p-16 max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold mb-8 flex items-center">
+            <i class="fas fa-burst text-orange-500 mr-4"></i>
+            ⚔️ Gérer les conflits de fusion
+        </h2>
+        
+        <p class="mb-6">Un conflit survient quand Git ne sait pas quelle version d'un fichier garder (par exemple, si deux personnes modifient la même ligne).</p>
+        
+        <div class="card mb-8">
+            <h3 class="text-xl font-bold mb-4">Comment identifier un conflit ?</h3>
+            <p class="text-gray-600 mb-4">Git marquera les zones problématiques directement dans votre fichier avec ces symboles :</p>
+            <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800">
+                <pre><code class="text-pink-400"><<<<<<< HEAD</code>
+<span class="text-gray-300">Votre version (modifications locales)</span>
+<code class="text-pink-400">=======</code>
+<span class="text-gray-300">La version entrante (modifications distantes)</span>
+<code class="text-pink-400">>>>>>>> main</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="card mb-8">
+                        <h3 class="text-xl font-bold mb-4">La méthode pour résoudre :</h3>
+                        <ol class="list-decimal pl-6 space-y-3 text-gray-700">
+                            <li>Ouvrez le fichier dans <strong>VS Code</strong> (il colorera les zones en conflit).</li>
+                            <li>Choisissez quelle version garder (ou mélangez les deux).</li>
+                            <li>Supprimez les marqueurs <code><<<<<<<</code>, <code>=======</code>, etc.</li>
+                            <li>Sauvegardez le fichier.</li>
+                            <li>Faites un <code>git add .</code> et <code>git commit</code> pour finaliser la fusion.
+                            </li>
+                        </ol>
+                    </div>
+
+                    <div class="tip">
+                        <strong>💡 Protip :</strong> Utilisez l'interface visuelle de VS Code ("Merge Editor") pour
+                        résoudre les
+                        conflits plus facilement en cliquant sur "Accept Current" ou "Accept Incoming".
+                    </div>
+                </section>
+
+                <!-- Git avancé -->
+                <section id="avance" class="content-section p-8 md:p-16 max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-8 flex items-center">
+                        <i class="fas fa-bolt text-purple-500 mr-4"></i>
+                        🚀 Git avancé pour la productivité
+                    </h2>
+
+                    <p class="mb-6">Une fois les bases maîtrisées, ces commandes et concepts avancés vous feront gagner
+                        un temps
+                        précieux.</p>
+
+                    <div class="space-y-8">
+                        <div class="bg-white p-6 rounded-xl border border-gray-300 shadow-sm">
+                            <h4 class="font-bold text-xl mb-4">🌿 Branches : Travailler sur plusieurs fonctionnalités
+                            </h4>
+                            <p class="text-gray-600 mb-4">Les branches permettent de développer des fonctionnalités
+                                séparément
+                                sans affecter la version principale.</p>
+
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <p class="font-medium mb-2">Créer une nouvelle branche :</p>
+                                    <div class="bg-gray-900 p-3 rounded">
+                                        <code class="command">git branch nom-de-la-branche</code>
+                                    </div>
+                                    <p class="text-gray-500 text-xs mt-1">Crée la branche mais ne vous y déplace pas</p>
+                                </div>
+
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <p class="font-medium mb-2">Se déplacer sur une branche :</p>
+                                    <div class="bg-gray-900 p-3 rounded">
+                                        <code class="command">git checkout nom-de-la-branche</code>
+                                    </div>
+                                    <p class="text-gray-500 text-xs mt-1">ou <code>git switch nom-de-la-branche</code>
+                                        (version
+                                        récente)</p>
+                                </div>
+
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <p class="font-medium mb-2">Créer et se déplacer :</p>
+                                    <div class="bg-gray-900 p-3 rounded">
+                                        <code class="command">git checkout -b nouvelle-fonctionnalite</code>
+                                    </div>
+                                    <p class="text-gray-500 text-xs mt-1">Combine les deux commandes précédentes</p>
+                                </div>
+
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <p class="font-medium mb-2">Voir toutes les branches :</p>
+                                    <div class="bg-gray-900 p-3 rounded">
+                                        <code class="command">git branch</code>
+                                    </div>
+                                    <p class="text-gray-500 text-xs mt-1">L'étoile (*) indique la branche actuelle</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-blue-50 p-4 rounded-lg mt-4">
+                                <p class="font-medium text-blue-800">Workflow typique avec branches :</p>
+                                <ol class="list-decimal pl-5 mt-2 space-y-1">
+                                    <li><code>git checkout -b ajout-menu</code> (créer une branche pour le menu)</li>
+                                    <li>Développer la fonctionnalité menu</li>
+                                    <li><code>git add .</code> et <code>git commit -m "Ajout du menu"</code></li>
+                                    <li><code>git checkout main</code> (retour à la branche principale)</li>
+                                    <li><code>git merge ajout-menu</code> (fusionner les modifications)</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl border border-gray-300 shadow-sm">
+                            <h4 class="font-bold text-xl mb-4">🔍 Inspection et historique</h4>
+                            <p class="text-gray-600 mb-4">Comprendre ce qui s'est passé dans votre dépôt.</p>
+
+                            <div class="space-y-4">
+                                <div>
+                                    <p class="font-medium">Voir l'historique des commits :</p>
+                                    <div class="bg-gray-900 p-3 rounded">
+                                        <code class="command">git log --oneline --graph --all</code>
+                                    </div>
+                                    <p class="text-gray-500 text-sm mt-1">Affiche un historique compact avec un graphe
+                                        des
+                                        branches</p>
+                                </div>
+
+                                <div>
+                                    <p class="font-medium">Voir les modifications non commitées :</p>
+                                    <div class="bg-gray-900 p-3 rounded">
+                                        <code class="command">git status</code>
+                                    </div>
+                                    <p class="text-gray-500 text-sm mt-1">Indique quels fichiers sont modifiés, ajoutés
+                                        ou
+                                        supprimés</p>
+                                </div>
+
+                                <div>
+                                    <p class="font-medium">Voir les différences :</p>
+                                    <div class="bg-gray-900 p-3 rounded">
+                                        <code class="command">git diff</code>
+                                    </div>
+                                    <p class="text-gray-500 text-sm mt-1">Montre les changements non encore ajoutés
+                                        (staged)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl border border-gray-300 shadow-sm">
+                            <h4 class="font-bold text-xl mb-4">⏪ Annuler des modifications</h4>
+                            <p class="text-gray-600 mb-4">Corriger les erreurs sans paniquer.</p>
+
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+                                    <p class="font-medium text-red-800 mb-2">Annuler les modifications non commitées :
+                                    </p>
+                                    <div class="bg-gray-900 p-3 rounded">
+                                        <code class="command">git checkout -- nom-du-fichier</code>
+                                    </div>
+                                    <p class="text-red-600 text-xs mt-1">Attention : cette action est irréversible !</p>
+                                </div>
+
+                                <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                                    <p class="font-medium text-yellow-800 mb-2">Défaire le dernier commit (garder les
+                                        modifications) :</p>
+                                    <div class="bg-gray-900 p-3 rounded">
+                                        <code class="command">git reset --soft HEAD~1</code>
+                                    </div>
+                                    <p class="text-yellow-600 text-xs mt-1">Les modifications restent dans votre
+                                        répertoire de
+                                        travail</p>
+                                </div>
+
+                                <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                                    <p class="font-medium text-green-800 mb-2">Annuler l'ajout d'un fichier (avant
+                                        commit) :</p>
+                                    <div class="bg-gray-900 p-3 rounded">
+                                        <code class="command">git reset HEAD nom-du-fichier</code>
+                                    </div>
+                                    <p class="text-green-600 text-xs mt-1">Retire le fichier de l'index (staging area)
+                                    </p>
+                                </div>
+
+                                <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                                    <p class="font-medium text-blue-800 mb-2">Créer un commit d'annulation :</p>
+                                    <div class="bg-gray-900 p-3 rounded">
+                                        <code class="command">git revert HEAD</code>
+                                    </div>
+                                    <p class="text-blue-600 text-xs mt-1">Crée un nouveau commit qui annule le précédent
+                                        (plus
+                                        sûr)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl border border-gray-300 shadow-sm">
+                            <h4 class="font-bold text-xl mb-4">🚀 Commandes alias pour gagner du temps</h4>
+                            <p class="text-gray-600 mb-4">Créez des raccourcis pour les commandes fréquentes.</p>
+
+                            <div class="bg-gray-900 p-6 rounded-xl">
+                                <pre class="text-sm"> <span class="comment"># Ajouter dans ~/.gitconfig (macOS/Linux) ou C:\Users\VotreNom.gitconfig (Windows)</span>
+[alias]
+co = checkout
+br = branch
+ci = commit
+st = status
+lg = log --oneline --graph --all
+last = log -1 HEAD unstage = reset HEAD --undo = reset --soft HEAD~1</pre>
+                            </div>
+                            <p class="text-gray-600 mt-4">Exemple d'utilisation : <code>git st</code> au lieu de
+                                <code>git status</code>
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Workflow Collaboratif -->
+                <section id="workflow-collab" class="content-section p-8 md:p-16 max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-8 flex items-center">
+                        <i class="fas fa-users-rays text-blue-500 mr-4"></i>
+                        👥 Workflow Collaboratif (PR & Stashing)
+                    </h2>
+
+                    <p class="mb-6">Travailler en équipe demande une organisation rigoureuse pour éviter de casser le
+                        projet
+                        principal.</p>
+
+                    <div class="card mb-8">
+                        <h3 class="text-xl font-bold mb-4">Pull Requests (PR)</h3>
+                        <p class="text-gray-600 mb-4">C'est la méthode standard pour proposer des changements sur un
+                            projet
+                            collaboratif :</p>
+                        <ul class="list-disc pl-6 space-y-2 text-gray-700">
+                            <li>Vous créez une branche : <code>git checkout -b ma-feature</code></li>
+                            <li>Vous poussez la branche : <code>git push origin ma-feature</code></li>
+                            <li>Sur GitHub, vous cliquez sur <strong>"Compare & pull request"</strong></li>
+                            <li>Vos collègues relisent votre code et valident la fusion.</li>
+                        </ul>
+                    </div>
+
+                    <div class="card mb-8">
+                        <h3 class="text-xl font-bold mb-4">Le Stashing : Mettre de côté son travail</h3>
+                        <p class="text-gray-600 mb-4">Utile quand vous devez changer de branche mais que votre travail
+                            actuel
+                            n'est pas prêt à être commité.</p>
+                        <div class="bg-slate-900 p-4 rounded-xl mb-4">
+                            <pre><code class="command">git stash</code> <span class="comment"># Sauvegarde et nettoie</span>
+<code class="command">git stash pop</code> <span class="comment"># Récupère le travail mis de côté</span></pre>
+                        </div>
+                    </div>
+
+                    <div class="important">
+                        <strong>⚠️ Règle d'or :</strong> Ne travaillez <strong>jamais</strong> directement sur la
+                        branche
+                        <code>main</code> dans un projet d'équipe. Utilisez toujours des branches !
+                    </div>
+                </section>
+
+                <!-- Mises à jour -->
+                <section id="updates" class="content-section p-8 md:p-16 max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-8 flex items-center">
+                        <i class="fas fa-sync text-green-500 mr-4"></i>
+                        🔄 Mises à jour du site
+                    </h2>
+
+                    <p class="mb-6">Le vrai pouvoir de Git + Vercel : mettre à jour votre site en ligne en seulement 3
+                        commandes.</p>
+
+                    <div
+                        class="bg-gradient-to-r from-green-50 to-emerald-100 p-8 rounded-2xl border border-green-300 mb-8">
+                        <h3 class="text-2xl font-bold mb-6 text-center">Le flux de mise à jour magique ✨</h3>
+
+                        <div class="flex flex-col items-center">
+                            <div class="text-center mb-8">
+                                <div
+                                    class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <i class="fas fa-code text-white text-3xl"></i>
+                                </div>
+                                <p class="font-bold text-lg">1. Modifiez votre code localement</p>
+                                <p class="text-gray-600">Dans votre éditeur de code (VSCode, Sublime, etc.)</p>
+                            </div>
+
+                            <i class="fas fa-arrow-down text-green-500 text-2xl mb-6"></i>
+
+                            <div class="bg-gray-900 p-6 rounded-xl w-full max-w-md">
+                                <p class="text-white text-center font-bold mb-4">Les 3 commandes</p>
+                                <div class="space-y-4">
+                                    <div>
+                                        <p class="text-gray-400 text-sm mb-1">Préparer les modifications :</p>
+                                        <p class="font-mono text-green-400 text-center">git add .</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-400 text-sm mb-1">Créer un point de sauvegarde :</p>
+                                        <p class="font-mono text-green-400 text-center">git commit -m "Description
+                                            claire"</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-400 text-sm mb-1">Envoyer vers GitHub :</p>
+                                        <p class="font-mono text-green-400 text-center">git push</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <i class="fas fa-arrow-down text-green-500 text-2xl my-6"></i>
+
+                            <div class="text-center">
+                                <div
+                                    class="w-20 h-20 bg-black rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <i class="fas fa-rocket text-white text-3xl"></i>
+                                </div>
+                                <p class="font-bold text-lg">2. Vercel déploie automatiquement</p>
+                                <p class="text-gray-600">En 1-2 minutes, votre site est à jour !</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-white p-6 rounded-xl border border-gray-300 shadow-sm">
+                            <h4 class="font-bold text-lg mb-4">📊 Vérifier le déploiement</h4>
+                            <p class="text-gray-600 mb-3">Sur Vercel, chaque déploiement a un statut :</p>
+                            <div class="space-y-2">
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                                    <span><strong>✅ READY</strong> - Déploiement réussi</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div>
+                                    <span><strong>🔄 BUILDING</strong> - Déploiement en cours</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
+                                    <span><strong>❌ FAILED</strong> - Erreur à corriger</span>
+                                </div>
+                            </div>
+                            <p class="text-gray-500 text-sm mt-3">Cliquez sur un déploiement pour voir les logs en cas
+                                d'erreur.
+                            </p>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl border border-gray-300 shadow-sm">
+                            <h4 class="font-bold text-lg mb-4">🕐 Revenir à une version précédente</h4>
+                            <p class="text-gray-600 mb-3">Sur Vercel, vous pouvez facilement revenir à une version
+                                antérieure :
+                            </p>
+                            <ol class="list-decimal pl-5 space-y-2">
+                                <li>Allez sur votre projet Vercel</li>
+                                <li>Cliquez sur l'onglet "Deployments"</li>
+                                <li>Trouvez la version souhaitée</li>
+                                <li>Cliquez sur "..." puis "Redeploy"</li>
+                            </ol>
+                            <p class="text-gray-500 text-sm mt-3">Utile si une nouvelle version a cassé quelque chose.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-100 p-6 rounded-xl border border-blue-300">
+                        <h4 class="font-bold text-lg mb-4">🚀 Tips pour des mises à jour efficaces</h4>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                                <span><strong>Commiter souvent</strong> - Mieux vaut plusieurs petits commits qu'un
+                                    gros</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                                <span><strong>Tester localement</strong> - Vérifiez que tout fonctionne avant de
+                                    pousser</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                                <span><strong>Messages descriptifs</strong> - "Correction du menu sur mobile" plutôt que
+                                    "fix
+                                    bug"</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                                <span><strong>Vérifiez Vercel</strong> - Attendez la confirmation de déploiement
+                                    réussi</span>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Ressources -->
+                <section id="ressources" class="content-section p-8 md:p-16 max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-8 flex items-center">
+                        <i class="fas fa-graduation-cap text-purple-500 mr-4"></i>
+                        📚 Ressources d'apprentissage
+                    </h2>
+
+                    <p class="mb-6">Approfondissez vos connaissances avec ces ressources sélectionnées.</p>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-white p-6 rounded-xl border border-gray-300 shadow-sm">
+                            <h4 class="font-bold text-lg mb-4">🎓 Cours et tutoriels</h4>
+                            <ul class="space-y-3">
+                                <li>
+                                    <a href="https://git-scm.com/book/fr/v2"
+                                        class="text-blue-600 hover:underline font-medium">
+                                        <i class="fas fa-book mr-2"></i>Pro Git Book (gratuit, en français)
+                                    </a>
+                                    <p class="text-gray-600 text-sm ml-6">Le livre officiel, référence complète</p>
+                                </li>
+                                <li>
+                                    <a href="https://lab.github.com" class="text-blue-600 hover:underline font-medium">
+                                        <i class="fab fa-github mr-2"></i>GitHub Learning Lab
+                                    </a>
+                                    <p class="text-gray-600 text-sm ml-6">Cours interactifs gratuits</p>
+                                </li>
+                                <li>
+                                    <a href="https://www.freecodecamp.org/news/git-and-github-for-beginners/"
+                                        class="text-blue-600 hover:underline font-medium">
+                                        <i class="fas fa-laptop-code mr-2"></i>FreeCodeCamp - Git & GitHub
+                                    </a>
+                                    <p class="text-gray-600 text-sm ml-6">Guide complet pour débutants</p>
+                                </li>
+                                <li>
+                                    <a href="https://vercel.com/docs" class="text-blue-600 hover:underline font-medium">
+                                        <i class="fas fa-book-open mr-2"></i>Documentation Vercel
+                                    </a>
+                                    <p class="text-gray-600 text-sm ml-6">Tout sur les fonctionnalités Vercel</p>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl border border-gray-300 shadow-sm">
+                            <h4 class="font-bold text-lg mb-4">🛠️ Outils et extensions</h4>
+                            <ul class="space-y-3">
+                                <li class="flex items-start">
+                                    <i class="fab fa-github text-gray-800 mr-3 mt-1"></i>
+                                    <div>
+                                        <p class="font-medium">GitHub Desktop</p>
+                                        <p class="text-gray-600 text-sm">Interface graphique pour Git (parfait pour
+                                            débuter)</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-code text-blue-500 mr-3 mt-1"></i>
+                                    <div>
+                                        <p class="font-medium">VSCode Git Integration</p>
+                                        <p class="text-gray-600 text-sm">Gérez Git directement dans VSCode</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-terminal text-gray-700 mr-3 mt-1"></i>
+                                    <div>
+                                        <p class="font-medium">Oh My Zsh + Git plugins</p>
+                                        <p class="text-gray-600 text-sm">Améliorez votre terminal avec des raccourcis
+                                            Git</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                                    <div>
+                                        <p class="font-medium">GitHub Student Pack</p>
+                                        <p class="text-gray-600 text-sm">Avantages gratuits pour étudiants</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-300 mb-8">
+                        <h4 class="font-bold text-lg mb-4">📖 Glossaire des termes importants</h4>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <p class="font-medium">Repository (dépôt)</p>
+                                <p class="text-gray-600 text-sm">L'espace qui contient votre projet et son historique
+                                </p>
+                            </div>
+                            <div>
+                                <p class="font-medium">Commit</p>
+                                <p class="text-gray-600 text-sm">Une sauvegarde de l'état de votre projet à un instant T
+                                </p>
+                            </div>
+                            <div>
+                                <p class="font-medium">Branch (branche)</p>
+                                <p class="text-gray-600 text-sm">Ligne de développement indépendante</p>
+                            </div>
+                            <div>
+                                <p class="font-medium">Merge (fusion)</p>
+                                <p class="text-gray-600 text-sm">Combinaison de deux branches</p>
+                            </div>
+                            <div>
+                                <p class="font-medium">Pull Request (PR)</p>
+                                <p class="text-gray-600 text-sm">Demande de fusion de code sur GitHub</p>
+                            </div>
+                            <div>
+                                <p class="font-medium">Deploy (déploiement)</p>
+                                <p class="text-gray-600 text-sm">Mise en ligne d'une version de votre application</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-blue-900 to-gray-900 text-white p-8 rounded-2xl">
+                        <h3 class="text-2xl font-bold mb-6 text-center">🎯 Prochaines étapes pour maîtriser Git</h3>
+                        <div class="grid md:grid-cols-3 gap-6 text-center">
+                            <div class="p-4">
+                                <div
+                                    class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <span class="text-white font-bold text-xl">1</span>
+                                </div>
+                                <p class="font-bold mb-2">Branches et fusion</p>
+                                <p class="text-gray-300 text-sm">Apprenez à travailler sur plusieurs fonctionnalités en
+                                    parallèle</p>
+                            </div>
+                            <div class="p-4">
+                                <div
+                                    class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <span class="text-white font-bold text-xl">2</span>
+                                </div>
+                                <p class="font-bold mb-2">Pull Requests</p>
+                                <p class="text-gray-300 text-sm">Revue de code et collaboration sur GitHub</p>
+                            </div>
+                            <div class="p-4">
+                                <div
+                                    class="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <span class="text-white font-bold text-xl">3</span>
+                                </div>
+                                <p class="font-bold mb-2">CI/CD avancé</p>
+                                <p class="text-gray-300 text-sm">Tests automatiques et déploiements conditionnels</p>
+                            </div>
+                        </div>
+                        <p class="text-center mt-8 text-gray-300">"La maîtrise de Git est l'une des compétences les plus
+                            valorisées dans le développement web moderne."</p>
+                    </div>
+
+                    <div class="text-center mt-12 p-6 bg-white rounded-xl border">
+                        <h4 class="font-bold text-xl mb-4">🚀 Vous êtes prêt !</h4>
+                        <p class="text-gray-700 mb-4">Vous avez maintenant toutes les connaissances pour :</p>
+                        <div class="flex flex-wrap justify-center gap-3 mb-6">
+                            <span class="bg-green-100 text-green-800 px-4 py-2 rounded-full">Créer des sites web</span>
+                            <span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full">Les versionner avec
+                                Git</span>
+                            <span class="bg-purple-100 text-purple-800 px-4 py-2 rounded-full">Les héberger sur
+                                GitHub</span>
+                            <span class="bg-black text-white px-4 py-2 rounded-full">Les déployer avec Vercel</span>
+                        </div>
+                        <p class="text-lg font-medium">À vous de jouer ! 👨‍💻👩‍💻</p>
+                    </div>
+                </section>
+
+                <footer class="p-12 text-center border-t border-slate-100">
+                    <p class="text-slate-400 text-sm">© 2025 UAC 3e Annee Genie Logiciel - Git Course</p>
+                </footer>
+            </div>
+        </main>
+
+        <!-- TOC Panel (Right) -->
+        <aside class="toc-panel sticky top-0 h-screen hidden xl:block">
+            <div class="mb-8">
+                <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">À RETENIR</h4>
+                <div id="lesson-takeaways" class="bg-blue-600 rounded-3xl p-6 text-white shadow-xl shadow-blue-500/20">
+                    <p class="text-sm leading-relaxed font-medium">Sélectionnez une leçon pour voir les points clés.</p>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">TABLE DES MATIÈRES</h4>
+                <div id="toc-list" class="space-y-4">
+                    <!-- Dynamic TOC will go here -->
+                </div>
+            </div>
+
+            <div class="p-6 bg-slate-100 rounded-2xl border border-slate-200">
+                <h5 class="font-bold text-sm mb-2">Besoin d'aide ?</h5>
+                <p class="text-xs text-slate-500 mb-4">Contactez-moi sur whatsapp pour poser vos questions.</p>
+
+                <a href="https://wa.me/+237690713130" target="_blank">
+                    <button
+                        class="w-full py-2 bg-white text-slate-900 rounded-xl text-xs font-bold border border-slate-200 hover:bg-slate-50 transition-colors">
+                        <i class="fas fa-whatsapp mr-2"></i> WhatsApp
+                    </button>
+                </a>
+            </div>
+        </aside>
+    </div>
+
+    <script src="script.js"></script>
